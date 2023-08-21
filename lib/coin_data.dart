@@ -33,7 +33,8 @@ const List<String> cryptoList = [
 
 class CoinData {
   CoinData();
-  String apikey = '99CEDE8A-B1FD-44B1-B1FD-4599A6B58DB1';
+  // TODO visit www.coinapi.io and put your api key here
+  String apikey = '';
 
   // get coin data from coinapi
   Future<String> fetchData({String? assetIdBase="BTC", String? assetIdQuote="USD"}) async {
