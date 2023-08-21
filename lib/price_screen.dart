@@ -9,6 +9,7 @@ class PriceScreen extends StatefulWidget {
 }
 
 class _PriceScreenState extends State<PriceScreen> {
+  bool isWaiting = false;
   String? selectedCurrency = 'USD';
   String? selectedCryto = 'BTC';
 
@@ -21,7 +22,8 @@ class _PriceScreenState extends State<PriceScreen> {
       var resultCard = ResultCard(
           crytoCurrency: crytoCurrency,
           selectedCurrency: selectedCurrency,
-          cryptoRateResults: cryptoRateResults
+          cryptoRateResults: cryptoRateResults,
+          showIsWaiting: isWaiting,
       );
       resultCards.add(resultCard);
     }
@@ -66,12 +68,14 @@ class _PriceScreenState extends State<PriceScreen> {
   }
 
   void getData() async {
+    isWaiting = true;
     try {
       for (String crypto in cryptoList) {
         print('crypto: $crypto');
         print('selectedCurrency: $selectedCurrency');
         String data = await CoinData().fetchData(
             assetIdBase: crypto, assetIdQuote: selectedCurrency);
+        isWaiting = false;
         setState(() {
           // any variable you want to update on screen must go in setState
           cryptoRateResults[crypto] = data;
@@ -123,11 +127,13 @@ class ResultCard extends StatelessWidget {
     required this.crytoCurrency,
     required this.cryptoRateResults,
     required this.selectedCurrency,
+    this.showIsWaiting,
   });
 
   final String crytoCurrency;
   final Map<String, String> cryptoRateResults;
   final String? selectedCurrency;
+  final bool? showIsWaiting;
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +148,7 @@ class ResultCard extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
           child: Text(
-            '1 $crytoCurrency = ${cryptoRateResults[crytoCurrency]} $selectedCurrency',
+            cardText(),
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 20.0,
@@ -152,5 +158,16 @@ class ResultCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String cardText() {
+    String cardText;
+    if (showIsWaiting == true) {
+      cardText = '1 $crytoCurrency = ??? $selectedCurrency';
+    } else {
+      cardText =
+      '1 $crytoCurrency = ${cryptoRateResults[crytoCurrency]} $selectedCurrency';
+    }
+    return cardText;
   }
 }
