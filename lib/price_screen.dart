@@ -15,29 +15,13 @@ class _PriceScreenState extends State<PriceScreen> {
   // Rate for each crypto to hash (in a loop)
   Map<String, String> cryptoRateResults = {};
 
-  List<Padding> resultCards() {
-    List<Padding> resultCards = [];
+  List<ResultCard> resultCards() {
+    List<ResultCard> resultCards = [];
     for (String crytoCurrency in cryptoList) {
-      var resultCard = Padding(
-        padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
-        child: Card(
-          color: Colors.lightBlueAccent,
-          elevation: 5.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
-            child: Text(
-              '1 $crytoCurrency = ${cryptoRateResults[crytoCurrency]} $selectedCurrency',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 20.0,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
+      var resultCard = ResultCard(
+          crytoCurrency: crytoCurrency,
+          selectedCurrency: selectedCurrency,
+          cryptoRateResults: cryptoRateResults
       );
       resultCards.add(resultCard);
     }
@@ -129,6 +113,43 @@ class _PriceScreenState extends State<PriceScreen> {
             child: Platform.isIOS ? iOSPicker() : androidDropDown(),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ResultCard extends StatelessWidget {
+  const ResultCard({
+    required this.crytoCurrency,
+    required this.cryptoRateResults,
+    required this.selectedCurrency,
+  });
+
+  final String crytoCurrency;
+  final Map<String, String> cryptoRateResults;
+  final String? selectedCurrency;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(18.0, 18.0, 18.0, 0),
+      child: Card(
+        color: Colors.lightBlueAccent,
+        elevation: 5.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 28.0),
+          child: Text(
+            '1 $crytoCurrency = ${cryptoRateResults[crytoCurrency]} $selectedCurrency',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20.0,
+              color: Colors.white,
+            ),
+          ),
+        ),
       ),
     );
   }
